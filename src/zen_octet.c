@@ -2013,7 +2013,7 @@ void OCT_shl_bits(octet *x, int n) {
 
 	if (byte_shift > 0) {
 		for (int i = 0; i < x->len- byte_shift; i++)  x->val[i] = x->val[i + byte_shift];
-		 for (int i = x->len - byte_shift; i < x->len; i++)  x->val[i] = 0;
+		for (int i = x->len - byte_shift; i < x->len; i++)  x->val[i] = 0;
 	}
 	if (bit_shift > 0) {
 		unsigned char carry = 0; 
@@ -2135,42 +2135,39 @@ static int shift_left_circular(lua_State *L) {
 		THROW(failed_msg);
 	}
 	END(1);
-
-
 }
 
 void OCT_circular_shr_bits(octet *x, int n) {
-    if (n >= 8 * x->len) {
-        n = n % (8 * x->len);
-    }
-
-    int byte_shift = n / 8;
-    int bit_shift = n % 8;
-    int carry_bits = 8 - bit_shift;
-
-    if (byte_shift > 0) {
-        unsigned char temp[x->len];
-        for (int i = 0; i < x->len; i++) {
-            temp[i] = x->val[i];
-        }
-
-        for (int i = 0; i < x->len; i++) {
-            x->val[i] = temp[(x->len+ i - byte_shift) % x->len];
-        }
-    }
-
-    if (bit_shift > 0) {
-        unsigned char carry = 0;
-        unsigned char last_byte_carry = (x->val[x->len-1] & ((1 << (bit_shift)) - 1)) << carry_bits;
-
-	for (int i = 0; i < x->len; i++) {
-		unsigned char current = x->val[i];
-		x->val[i] = (current >> bit_shift) | carry;
-		carry = (current  & ((1 << (bit_shift)) - 1)) << carry_bits;
+	if (n >= 8 * x->len) {
+		n = n % (8 * x->len);
 	}
 
-        x->val[0] |= last_byte_carry;
-    }
+	int byte_shift = n / 8;
+	int bit_shift = n % 8;
+	int carry_bits = 8 - bit_shift;
+
+	if (byte_shift > 0) {
+		unsigned char temp[x->len];
+		for (int i = 0; i < x->len; i++) {
+			temp[i] = x->val[i];
+		}
+
+		for (int i = 0; i < x->len; i++) {
+			x->val[i] = temp[(x->len + i - byte_shift) % x->len];
+		}
+	}
+
+	if (bit_shift > 0) {
+		unsigned char carry = 0;
+		unsigned char last_byte_carry = (x->val[x->len - 1] & ((1 << (bit_shift)) - 1)) << carry_bits;
+
+		for (int i = 0; i < x->len; i++) {
+			unsigned char current = x->val[i];
+			x->val[i] = (current >> bit_shift) | carry;
+			carry = (current & ((1 << (bit_shift)) - 1)) << carry_bits;
+		}
+		x->val[0] |= last_byte_carry;
+	}
 }
 
 // Circular shift octet to the right by n bits
@@ -2233,14 +2230,14 @@ static int and_grow(lua_State *L) {
 
 	// pad first arg with zeroes
 	if(x->len < max) {
-	  x->val = realloc(x->val, max);
-	  x->max = max;
-	  OCT_pad(x, max);
+		x->val = realloc(x->val, max);
+		x->max = max;
+		OCT_pad(x, max);
 	}
 	if(y->len < max) {
-	  y->val = realloc(y->val, max);
-	  y->max = max;
-	  OCT_pad(y, max);
+		y->val = realloc(y->val, max);
+		y->max = max;
+		OCT_pad(y, max);
 	}
 
 	OCT_copy(n, x);
@@ -2316,14 +2313,14 @@ static int or_grow(lua_State *L) {
 
 	// pad first arg with zeroes
 	if(x->len < max) {
-	  x->val = realloc(x->val, max);
-	  x->max = max;
-	  OCT_pad(x, max);
+		x->val = realloc(x->val, max);
+		x->max = max;
+		OCT_pad(x, max);
 	}
 	if(y->len < max) {
-	  y->val = realloc(y->val, max);
-	  y->max = max;
-	  OCT_pad(y, max);
+		y->val = realloc(y->val, max);
+		y->max = max;
+		OCT_pad(y, max);
 	}
 
 	OCT_copy(n, x);
