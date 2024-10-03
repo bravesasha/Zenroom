@@ -223,13 +223,13 @@ int fuzz_bit_circular_shift_random(lua_State *L) {
 	int shift_bits = 0;
 
 	if (res->len < 256) {
-		shift_bits = (RAND_byte(Z->random_generator) % 256) * 8 + (RAND_byte(Z->random_generator) % 8);
+		shift_bits = (RAND_byte(Z->random_generator) % res->len) * 8 + (RAND_byte(Z->random_generator) % 8);
 	}
 	else if (res->len < 65535) {
 		uint16_t point16 = 
 			RAND_byte(Z->random_generator)
 			| (uint32_t)RAND_byte(Z->random_generator) << 8;
-		shift_bits = point16 % total_bits;
+		shift_bits = (point16 % res->len) * 8 + (RAND_byte(Z->random_generator) % 8);
 	}
 	else if (res->len < INT_MAX) {
 		uint32_t point32 =
@@ -237,7 +237,7 @@ int fuzz_bit_circular_shift_random(lua_State *L) {
 			| (uint32_t) RAND_byte(Z->random_generator) << 8
 			| (uint32_t) RAND_byte(Z->random_generator) << 16
 			| (uint32_t) RAND_byte(Z->random_generator) << 24;
-		shift_bits = point32 % total_bits;
+		shift_bits = (point32 % res->len) * 8 + (RAND_byte(Z->random_generator) % 8);
 	}
 
 	OCT_circular_shl_bits(res, shift_bits);
